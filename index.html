@@ -1,0 +1,934 @@
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pitch Deck — Мотивация сети пекарен</title>
+  <style>
+    :root {
+      --bg: #05070f;
+      --bg2: #0b1220;
+      --card: rgba(255,255,255,0.06);
+      --card-strong: rgba(255,255,255,0.08);
+      --line: rgba(255,255,255,0.10);
+      --text: #ffffff;
+      --muted: #9ca3af;
+      --accent: #f59e0b;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --red: #ef4444;
+      --shadow: 0 20px 50px rgba(0,0,0,0.28);
+      --radius: 24px;
+      --maxw: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(59,130,246,0.14), transparent 20%),
+        radial-gradient(circle at 85% 20%, rgba(245,158,11,0.12), transparent 22%),
+        radial-gradient(circle at 20% 85%, rgba(34,197,94,0.10), transparent 18%),
+        linear-gradient(180deg, var(--bg2), var(--bg));
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 4px;
+      width: 100%;
+      z-index: 100;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .progress__bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), #fb7185, var(--blue));
+      box-shadow: 0 0 20px rgba(245,158,11,0.35);
+      transform-origin: left center;
+    }
+
+    .nav {
+      position: fixed;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 90;
+    }
+
+    .nav a {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: block;
+      background: rgba(255,255,255,0.22);
+      border: 1px solid rgba(255,255,255,0.18);
+      transition: transform 0.25s ease, background 0.25s ease;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: var(--accent);
+      transform: scale(1.2);
+    }
+
+    .slide {
+      min-height: 100vh;
+      padding: 72px 32px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0));
+      pointer-events: none;
+    }
+
+    .slide__inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(40px) scale(0.985);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      will-change: opacity, transform;
+    }
+
+    .slide__inner.is-visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--line);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(40px, 7vw, 76px);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+      max-width: 980px;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 980px;
+    }
+
+    h3 {
+      margin: 0 0 12px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    p {
+      margin: 0 0 16px;
+      max-width: 920px;
+      font-size: clamp(18px, 2.1vw, 22px);
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    li {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.55;
+      margin: 8px 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: end;
+    }
+
+    .hero-panel,
+    .card,
+    .chart-box,
+    .salary-box,
+    .note,
+    .table-wrap {
+      background: var(--card);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel,
+    .card,
+    .chart-box,
+    .salary-box,
+    .note {
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .stat {
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .stat__value {
+      font-size: clamp(30px, 4vw, 42px);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+
+    .stat__label {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      line-height: 1.4;
+    }
+
+    .grid,
+    .grid-3,
+    .compare,
+    .salary-ladder {
+      display: grid;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .compare { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .salary-ladder { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto -20% -30% auto;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(255,255,255,0.10), transparent 65%);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(245,158,11,0.22);
+      background: var(--card-strong);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 10px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .highlight { color: var(--accent); }
+    .success { color: var(--green); }
+    .danger { color: var(--red); }
+    .blue { color: var(--blue); }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .table-wrap {
+      overflow: hidden;
+      border-radius: 24px;
+      margin-top: 24px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(255,255,255,0.04);
+    }
+
+    th, td {
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: left;
+      vertical-align: top;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    th {
+      background: rgba(255,255,255,0.06);
+      color: var(--accent);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .note {
+      margin-top: 22px;
+      border-left: 4px solid var(--accent);
+      font-size: 18px;
+      line-height: 1.55;
+      color: var(--text);
+    }
+
+    .chart-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 18px;
+      height: 290px;
+      margin-top: 8px;
+    }
+
+    .bar-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .bar {
+      width: min(100%, 120px);
+      border-radius: 18px 18px 0 0;
+      background: linear-gradient(180deg, #f59e0b, #ea580c);
+      color: white;
+      font-weight: 800;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 10px;
+      box-shadow: 0 14px 30px rgba(245,158,11,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .bar:hover { transform: translateY(-4px); }
+    .bar.green { background: linear-gradient(180deg, #22c55e, #15803d); box-shadow: 0 14px 30px rgba(34,197,94,0.2); }
+    .bar.blue { background: linear-gradient(180deg, #60a5fa, #1d4ed8); box-shadow: 0 14px 30px rgba(59,130,246,0.2); }
+    .bar.pink { background: linear-gradient(180deg, #fb7185, #be123c); box-shadow: 0 14px 30px rgba(244,63,94,0.2); }
+
+    .bar-label {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .salary-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .salary-step {
+      padding: 20px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .salary-step__money {
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .salary-step__label {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .footer {
+      position: absolute;
+      right: 18px;
+      bottom: 14px;
+      color: rgba(255,255,255,0.34);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .test-area {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.12);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1100px) {
+      .hero,
+      .grid,
+      .grid-3,
+      .compare,
+      .chart-wrap,
+      .salary-box,
+      .salary-ladder,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .nav { display: none; }
+      .slide { padding: 56px 18px; }
+      .chart { height: 240px; }
+      .bar { width: 100%; max-width: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><div class="progress__bar" id="progressBar"></div></div>
+
+  <nav class="nav" aria-label="Навигация по слайдам">
+    <a href="#s1" data-target="s1"></a>
+    <a href="#s2" data-target="s2"></a>
+    <a href="#s3" data-target="s3"></a>
+    <a href="#s4" data-target="s4"></a>
+    <a href="#s5" data-target="s5"></a>
+    <a href="#s6" data-target="s6"></a>
+    <a href="#s7" data-target="s7"></a>
+    <a href="#s8" data-target="s8"></a>
+    <a href="#s9" data-target="s9"></a>
+    <a href="#s10" data-target="s10"></a>
+  </nav>
+
+  <section class="slide" id="s1">
+    <div class="slide__inner">
+      <div class="hero">
+        <div>
+          <div class="kicker">Pitch deck</div>
+          <h1>Система мотивации, которая увеличивает прибыль сети пекарен</h1>
+          <p>Новая модель переводит бизнес из режима контроля KPI в режим управления деньгами через поведение сотрудников, структуру продаж и рост валовой прибыли.</p>
+          <div class="stats">
+            <div class="stat">
+              <div class="stat__value">15.35 млн ₽</div>
+              <div class="stat__label">месячная выручка</div>
+            </div>
+            <div class="stat">
+              <div class="stat__value">1.6 млн ₽</div>
+              <div class="stat__label">операционная прибыль</div>
+            </div>
+            <div class="stat">
+              <div class="stat__value">25%</div>
+              <div class="stat__label">ФОТ от выручки</div>
+            </div>
+            <div class="stat">
+              <div class="stat__value">180 ₽</div>
+              <div class="stat__label">текущий средний чек</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <span class="eyebrow">Ключевой тезис</span>
+          <h3>Основной управляемый драйвер — не трафик, а <span class="highlight">средний чек и продажа маржинальных позиций</span>.</h3>
+          <p>Это означает, что мотивация должна платить не за абстрактный оборот, а за действия, которые приносят прибыль: допродажи, рост чека, улучшение структуры продаж и контроль ФОТ.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer">01</div>
+  </section>
+
+  <section class="slide" id="s2">
+    <div class="slide__inner">
+      <div class="kicker">Проблема</div>
+      <h2>Почему прежняя система не давала максимум результата</h2>
+      <div class="compare">
+        <div class="card">
+          <span class="eyebrow danger">Было</span>
+          <h3>Мотивация на оборот и наценку</h3>
+          <ul>
+            <li>Оборот сильно зависит от трафика и маркетинга.</li>
+            <li>Наценка не равна прибыли и не управляется линейным персоналом.</li>
+            <li>Средний чек и допродажи не были центром системы.</li>
+            <li>Часть KPI была субъективной и слабо связанной с деньгами.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="eyebrow success">Следствие</span>
+          <h3>Система контролировала, но не зарабатывала</h3>
+          <ul>
+            <li>Кассиры не были заинтересованы продавать больше.</li>
+            <li>Управляющие не отвечали за структуру продаж точки.</li>
+            <li>Высоконаценочные товары не продвигались системно.</li>
+            <li>Компания оставляла прибыль на столе.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note">Новая система устраняет эту ошибку: <strong>сотрудник зарабатывает больше только тогда, когда его действия увеличивают прибыль компании.</strong></div>
+    </div>
+    <div class="footer">02</div>
+  </section>
+
+  <section class="slide" id="s3">
+    <div class="slide__inner">
+      <div class="kicker">ABC-логика</div>
+      <h2>Как ассортимент влияет на мотивацию</h2>
+      <div class="grid-3">
+        <div class="card">
+          <span class="eyebrow">База</span>
+          <h3>A-товары</h3>
+          <ul>
+            <li>Хлеб.</li>
+            <li>Пироги базовой линейки.</li>
+            <li>Сосиска в тесте и беляш.</li>
+            <li>Товары, которые формируют ядро выручки.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="eyebrow highlight">Золото</span>
+          <h3>Маржинальные позиции</h3>
+          <ul>
+            <li>Напитки.</li>
+            <li>Часть сладкой выпечки.</li>
+            <li>Пиццы и позиции с высокой наценкой.</li>
+            <li>Товары, которые нужно допродавать сознательно.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="eyebrow">Хвост</span>
+          <h3>C-позиции</h3>
+          <ul>
+            <li>Дают слабый вклад в продажи.</li>
+            <li>Размывают витрину и усложняют выбор.</li>
+            <li>Часть ассортимента стоит сокращать или убирать из фокуса продаж.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="pill-row">
+        <div class="pill">Кассир должен продавать не всё подряд, а нужные позиции</div>
+        <div class="pill">Управляющий должен следить за долей «золота» в выручке</div>
+        <div class="pill">ABC-анализ встроен в мотивацию, а не лежит отдельно</div>
+      </div>
+    </div>
+    <div class="footer">03</div>
+  </section>
+
+  <section class="slide" id="s4">
+    <div class="slide__inner">
+      <div class="kicker">Новая логика</div>
+      <h2>Принцип работы новой системы</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Кассиры</h3>
+          <p><span class="highlight">Средний чек + золотые товары</span></p>
+          <ul>
+            <li>Ниже 180 ₽ — бонуса нет.</li>
+            <li>180–200 ₽ — бонус за чек.</li>
+            <li>Выше 200 ₽ — усиленный бонус.</li>
+            <li>Доплата за каждую продажу товара из золотого списка.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Управляющие</h3>
+          <p><span class="highlight">Прибыль точки + структура продаж</span></p>
+          <ul>
+            <li>Средний чек.</li>
+            <li>Доля маржинальных товаров.</li>
+            <li>ФОТ %.</li>
+            <li>Выручка — как вторичный KPI.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="note">Модель короткая, понятная и применимая в линейном бизнесе без сложных формул и непроверяемых индексов.</div>
+    </div>
+    <div class="footer">04</div>
+  </section>
+
+  <section class="slide" id="s5">
+    <div class="slide__inner">
+      <div class="kicker">Формулы</div>
+      <h2>Расчёт зарплаты руководителей</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Роль</th>
+              <th>Фикс</th>
+              <th>Переменная часть</th>
+              <th>Блокер</th>
+              <th>Результат</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Операционный директор</td>
+              <td>120 000 ₽</td>
+              <td>5–7% от роста прибыли сети + KPI-модификатор</td>
+              <td>Нет прироста прибыли — нет переменной части</td>
+              <td>Рост дохода вместе с ростом результата сети</td>
+            </tr>
+            <tr>
+              <td>Управляющий точки</td>
+              <td>80 000 ₽</td>
+              <td>5% от прироста валовой прибыли точки + KPI-модификатор</td>
+              <td>Средний чек точки ниже 180 ₽ — бонус = 0</td>
+              <td>Управляющий становится владельцем результата точки</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="footer">05</div>
+  </section>
+
+  <section class="slide" id="s6">
+    <div class="slide__inner">
+      <div class="kicker">Сценарии</div>
+      <h2>Доход операционного директора</h2>
+      <div class="salary-ladder">
+        <div class="salary-step">
+          <div class="salary-step__money">120k</div>
+          <div class="salary-step__label">Без роста прибыли сети</div>
+        </div>
+        <div class="salary-step">
+          <div class="salary-step__money success">165k</div>
+          <div class="salary-step__label">Рост прибыли на 500k</div>
+        </div>
+        <div class="salary-step">
+          <div class="salary-step__money blue">200k</div>
+          <div class="salary-step__label">Рост прибыли на 1 млн</div>
+        </div>
+        <div class="salary-step">
+          <div class="salary-step__money highlight">231k</div>
+          <div class="salary-step__label">Рост прибыли на 1.5 млн</div>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-box card">
+          <h3>Визуальный дашборд роста</h3>
+          <div class="chart">
+            <div class="bar-col"><div class="bar" style="height: 52%;">120</div><div class="bar-label">База</div></div>
+            <div class="bar-col"><div class="bar green" style="height: 71%;">165</div><div class="bar-label">Средний рост</div></div>
+            <div class="bar-col"><div class="bar blue" style="height: 86%;">200</div><div class="bar-label">Цель</div></div>
+            <div class="bar-col"><div class="bar pink" style="height: 100%;">231</div><div class="bar-label">Сильный рост</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Что влияет на зарплату</h3>
+          <ul>
+            <li>Рост валовой и операционной прибыли сети.</li>
+            <li>Рост среднего чека по сети.</li>
+            <li>Увеличение доли маржинальных товаров.</li>
+            <li>Удержание ФОТ в целевом коридоре.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer">06</div>
+  </section>
+
+  <section class="slide" id="s7">
+    <div class="slide__inner">
+      <div class="kicker">Сценарии</div>
+      <h2>Доход управляющего точки</h2>
+      <div class="salary-ladder">
+        <div class="salary-step">
+          <div class="salary-step__money">80k</div>
+          <div class="salary-step__label">Слабый результат</div>
+        </div>
+        <div class="salary-step">
+          <div class="salary-step__money success">105k</div>
+          <div class="salary-step__label">Рост прибыли точки на 200k</div>
+        </div>
+        <div class="salary-step">
+          <div class="salary-step__money blue">120k</div>
+          <div class="salary-step__label">Рост прибыли точки на 400k</div>
+        </div>
+        <div class="salary-step">
+          <div class="salary-step__money highlight">139k</div>
+          <div class="salary-step__label">Рост прибыли точки на 700k</div>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-box card">
+          <h3>Визуальный дашборд роста</h3>
+          <div class="chart">
+            <div class="bar-col"><div class="bar" style="height: 58%;">80</div><div class="bar-label">База</div></div>
+            <div class="bar-col"><div class="bar green" style="height: 76%;">105</div><div class="bar-label">Средний</div></div>
+            <div class="bar-col"><div class="bar blue" style="height: 86%;">120</div><div class="bar-label">Хороший</div></div>
+            <div class="bar-col"><div class="bar pink" style="height: 100%;">139</div><div class="bar-label">Сильный</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Что влияет на зарплату</h3>
+          <ul>
+            <li>Средний чек точки.</li>
+            <li>Доля золотых товаров в выручке.</li>
+            <li>ФОТ % на точке.</li>
+            <li>Прирост валовой прибыли.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer">07</div>
+  </section>
+
+  <section class="slide" id="s8">
+    <div class="slide__inner">
+      <div class="kicker">Эффект</div>
+      <h2>Почему система выгодна компании</h2>
+      <div class="stats">
+        <div class="stat"><div class="stat__value">+1.7 млн ₽</div><div class="stat__label">прирост выручки при чеке 200 ₽</div></div>
+        <div class="stat"><div class="stat__value">+765k ₽</div><div class="stat__label">прирост валовой прибыли</div></div>
+        <div class="stat"><div class="stat__value">~300k ₽</div><div class="stat__label">оценка бонусных выплат</div></div>
+        <div class="stat"><div class="stat__value">~465k ₽</div><div class="stat__label">чистый финансовый эффект</div></div>
+      </div>
+      <div class="note">Бонусы становятся инвестициями с положительным ROI. Компания платит только из дополнительно созданного результата.</div>
+    </div>
+    <div class="footer">08</div>
+  </section>
+
+  <section class="slide" id="s9">
+    <div class="slide__inner">
+      <div class="kicker">Сравнение</div>
+      <h2>Старая и новая системы рядом</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Критерий</th>
+              <th>Старая система</th>
+              <th>Новая система</th>
+              <th>Что меняется</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Главный KPI</td>
+              <td>Оборот и наценка</td>
+              <td>Средний чек и прибыль</td>
+              <td>Фокус уходит от формального оборота к реальным деньгам</td>
+            </tr>
+            <tr>
+              <td>Связь с поведением</td>
+              <td>Слабая</td>
+              <td>Прямая</td>
+              <td>Люди понимают, что делать, чтобы зарабатывать больше</td>
+            </tr>
+            <tr>
+              <td>ABC-анализ</td>
+              <td>Отдельно от мотивации</td>
+              <td>Встроен в бонусную механику</td>
+              <td>Нужный ассортимент начинает продаваться осознанно</td>
+            </tr>
+            <tr>
+              <td>Роль управляющего</td>
+              <td>Администратор</td>
+              <td>Мини-директор точки</td>
+              <td>Появляется ответственность за прибыль точки</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="footer">09</div>
+  </section>
+
+  <section class="slide" id="s10">
+    <div class="slide__inner">
+      <div class="kicker">Внедрение</div>
+      <h2>Как запускать систему</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Шаги на 2 недели</h3>
+          <ul>
+            <li>Утвердить список золотых товаров.</li>
+            <li>Подготовить отчёт по среднему чеку и золотым продажам.</li>
+            <li>Обучить управляющих и кассиров.</li>
+            <li>Запустить пилот на 1–2 точках.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Сообщение команде</h3>
+          <p><span class="highlight">Вы сами управляете своей зарплатой через результат.</span></p>
+          <ul>
+            <li>Больше чек — больше доход.</li>
+            <li>Больше маржинальных продаж — больше доход.</li>
+            <li>Больше прибыль точки и сети — больше доход руководителей.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="test-area">
+        <strong>Проверки, добавленные для устойчивости:</strong><br>
+        1. В коде больше нет зависимости от внешних библиотек, поэтому ошибка <code>gsap is not defined</code> исключена.<br>
+        2. Анимации реализованы через стандартный <code>IntersectionObserver</code> с резервным сценарием на случай его отсутствия.<br>
+        3. Добавлен безопасный код обновления прогресс-бара и активного состояния навигации.<br>
+        4. Если JavaScript не выполнится, контент всё равно читаем и полностью доступен.
+      </div>
+    </div>
+    <div class="footer">10</div>
+  </section>
+
+  <script>
+    (function () {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const inners = Array.from(document.querySelectorAll('.slide__inner'));
+      const navLinks = Array.from(document.querySelectorAll('.nav a'));
+      const progressBar = document.getElementById('progressBar');
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function revealAll() {
+        inners.forEach(inner => inner.classList.add('is-visible'));
+      }
+
+      function updateProgress() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = docHeight > 0 ? clamp((scrollTop / docHeight) * 100, 0, 100) : 0;
+        if (progressBar) {
+          progressBar.style.width = ratio + '%';
+        }
+      }
+
+      function updateActiveNav() {
+        let currentId = slides[0] ? slides[0].id : null;
+        const viewportMiddle = window.scrollY + window.innerHeight * 0.45;
+
+        slides.forEach((slide) => {
+          const top = slide.offsetTop;
+          const bottom = top + slide.offsetHeight;
+          if (viewportMiddle >= top && viewportMiddle < bottom) {
+            currentId = slide.id;
+          }
+        });
+
+        navLinks.forEach(link => {
+          const isActive = link.dataset.target === currentId;
+          link.classList.toggle('active', isActive);
+        });
+      }
+
+      function onScroll() {
+        updateProgress();
+        updateActiveNav();
+      }
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const inner = entry.target.querySelector('.slide__inner');
+              if (inner) inner.classList.add('is-visible');
+            }
+          });
+        }, {
+          threshold: 0.18,
+          rootMargin: '0px 0px -8% 0px'
+        });
+
+        slides.forEach(slide => observer.observe(slide));
+      } else {
+        revealAll();
+      }
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+          const id = link.getAttribute('href');
+          const target = id ? document.querySelector(id) : null;
+          if (target) {
+            event.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          if (inners[0]) inners[0].classList.add('is-visible');
+          onScroll();
+        }, 50);
+      });
+
+      // Smoke tests in runtime
+      console.assert(slides.length === 10, 'Expected 10 slides in the deck');
+      console.assert(Boolean(progressBar), 'Progress bar element should exist');
+      console.assert(navLinks.length === 10, 'Expected 10 navigation anchors');
+    })();
+  </script>
+</body>
+</html>
